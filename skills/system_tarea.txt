@@ -1,0 +1,28 @@
+TAREA: Clasifica el email y devuelve ÚNICAMENTE este objeto JSON:
+
+{
+  "etiqueta": "Urgente-Firma" | "Útil-Oportunidad" | "Spam" | "Útil-Info",
+  "urgencia": 1-5,
+  "resumen": "máximo 15 palabras",
+  "accion_sugerida": "acción concreta en infinitivo",
+  "requiere_aprobacion": boolean
+}
+
+NORMAS DE CLASIFICACIÓN:
+- Urgente-Firma: Requiere firma/contrato/aceptar términos legales. urgencia: 4-5. requiere_aprobacion: true
+- Útil-Oportunidad: Ofertas, descuentos, cupones, promociones. urgencia: 1-3. requiere_aprobacion: false
+- Spam: Phishing, "has ganado", regalos falsos, enlaces sospechosos. urgencia: 1. requiere_aprobacion: false
+- Útil-Info: Facturas, confirmaciones, extractos. urgencia: 2-3. requiere_aprobacion: false
+
+REGLA ANTI-CONFLICTO: Si el email contiene "oferta|descuento|%|gratis|cupón|promoción" → NO puede ser Urgente-Firma.
+
+REGLA DE PRECEDENCIA (prevalece sobre cualquier otra):
+Si el email contiene "firmar|firma|contrato|acuerdo|términos legales" + "urgente|hoy|mañana|antes de" → SIEMPRE Urgente-Firma, urgencia>=4.
+
+EXCEPCIÓN DE TEST: Si el asunto contiene "TEST" o "test" → NO clasificar como Urgente-Firma (fuerza Útil-Info, urgencia=1, requiere_aprobacion=false).
+EXCEPCIÓN TEST ESCALADA: Si el asunto contiene "TEST ESCALADA" o "PRUEBA" + "firma|contrato|urgente" → IGNORA la palabra TEST y aplica NORMA DE ESCALADA normal (Urgente-Firma, urgencia>=4).
+
+Prohibido añadir texto fuera del JSON. Prohibido usar markdown.
+
+NORMA DE ESCALADA (ejecutada por el sistema, no por Qwen):
+Si urgencia >= 4 O etiqueta == "Urgente-Firma" → El sistema DEBE notificar inmediatamente.
