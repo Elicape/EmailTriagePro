@@ -1,5 +1,30 @@
 # EmailTriagePro — Clasificador con Qwen local + Alertas Telegram
 
+## v1.0 — Cerrado
+
+**4 cambios clave frente a la versión anterior:**
+
+| Cambio | Por qué |
+|--------|---------|
+| **Arranque inteligente** | Sin `config.ini` muestra bienvenida humana. Ni un intento fantasma de conexión. |
+| **Configuración dinámica** | Elige Gmail / Zoho / Otro IMAP y solo ves los campos que necesitas. |
+| **Modo Demo** | 25 emails de ejemplo clasificados con reglas de keywords en 0.02 segundos, sin internet, sin IA. |
+| **Documentación para no-técnicos** | `CONEXION_Y_USO.md` explica paso a paso sin palabras raras. |
+
+**5 checks de terminado:** ✅ sin `config.ini` → bienvenida | ✅ Demo clasifica 25 | ✅ Config dinámica 2/4 campos | ✅ README con historia de Laura | ✅ `test_smoke.py` 2/2
+
+---
+
+## El caso de Laura
+
+Laura gestiona papeles para autónomos en un pueblo de Aragón. Recibe 40 emails al día. Entre facturas, Hacienda y ofertas de seguros, se le colaba lo urgente.
+
+Probó esta app: Conectó su Zoho en 2 minutos. Ahora solo mira Telegram cuando vibra. El resto lo revisa los viernes con café.
+
+Laura no sabe qué es IMAP. Ni falta que hace.
+
+---
+
 Sistema autónomo que clasifica correos IMAP mediante un LLM local (Qwen3-VL 2B) y escala alertas Urgente-Firma a Telegram con botones Aprobar/Rechazar. Diseñado para autónomos que necesitan priorizar correos críticos sin depender de APIs externas.
 
 ## Arquitectura
