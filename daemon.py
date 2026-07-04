@@ -118,7 +118,11 @@ def get_model_path(config_model_path=None):
     return "Qwen3-VL-2B-Instruct-Q4_K_M.gguf"
 
 
-LLAMA_CLI = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bin", "llama-cli")
+BASE_DIR = Path(__file__).parent
+if platform.system() == "Windows":
+    LLAMA_CLI = BASE_DIR / "bin_win" / "llama-cli"
+else:
+    LLAMA_CLI = BASE_DIR / "bin" / "llama-cli"
 MODELO_ESPERADO = "Qwen3-VL-2B-Instruct-Q4_K_M.gguf"
 
 
