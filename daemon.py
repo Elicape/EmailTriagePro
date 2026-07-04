@@ -24,6 +24,7 @@ import shutil
 import glob
 import hashlib
 import telebot
+from pathlib import Path
 from datetime import datetime
 from email.header import decode_header
 
@@ -117,67 +118,38 @@ def get_model_path(config_model_path=None):
     return "Qwen3-VL-2B-Instruct-Q4_K_M.gguf"
 
 
-VERSION_REQUERIDA = "1191758c5"
+LLAMA_CLI = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bin", "llama-cli")
+MODELO_ESPERADO = "Qwen3-VL-2B-Instruct-Q4_K_M.gguf"
+
 
 def verificar_entorno():
-    workspace = os.path.dirname(os.path.abspath(__file__))
-    is_windows = platform.system() == "Windows"
-    filename = "llama-cli.exe" if is_windows else "llama-cli"
-    bin_path = os.path.join(workspace, "bin", filename)
-    model_path = os.path.join(workspace, "models", "Qwen3-VL-2B-Instruct-Q4_K_M.gguf")
-
-    if not os.path.exists(bin_path):
-        raise RuntimeError(
-            f"Falta el archivo: bin/{filename}\n\n"
-            "Descarga llama.cpp versión b9780 (commit 1191758c5) y copia "
-            "llama-cli en la carpeta bin/.\n"
-            "Enlace: https://github.com/ggml-org/llama.cpp/releases/tag/b9780\n\n"
-            "O compílalo tú mismo desde el commit:\n"
-            "  git clone https://github.com/ggml-org/llama.cpp\n"
-            "  cd llama.cpp && git checkout 1191758c5 && cmake -B build && cmake --build build --config Release\n"
-            "  cp build/bin/llama-cli <ruta>/bin/"
+    if not os.path.exists(LLAMA_CLI):
+        raise FileNotFoundError(
+            "No encuentro bin/llama-cli. Lee CONEXION_Y_USO.md"
         )
 
-    if not os.path.exists(model_path):
-        raise RuntimeError(
-            f"Falta el archivo: models/Qwen3-VL-2B-Instruct-Q4_K_M.gguf\n\n"
-            "Descárgalo de HuggingFace (pesa 1.3GB):\n"
-            "  https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct-GGUF/resolve/main/"
-            "Qwen3-VL-2B-Instruct-Q4_K_M.gguf\n\n"
-            "Coloca el archivo en la carpeta models/"
+    modelo_path = Path("./models") / MODELO_ESPERADO
+    if not modelo_path.exists():
+        raise FileNotFoundError(
+            f"No encuentro el modelo obligatorio.\n\n"
+            f"Falta: models/{MODELO_ESPERADO}\n"
+            f"Descárgalo de HuggingFace. Lee CONEXION_Y_USO.md sección 4.\n\n"
+            f"IMPORTANTE: Otros modelos .gguf NO funcionan en v1.0."
         )
 
     env = os.environ.copy()
-    bin_dir = os.path.join(workspace, "bin")
-    ld_key = "LD_LIBRARY_PATH" if not is_windows else "PATH"
-    env[ld_key] = f"{bin_dir}{os.pathsep}{env.get(ld_key, '')}"
+    bin_dir = os.path.dirname(LLAMA_CLI)
+    env["LD_LIBRARY_PATH"] = f"{bin_dir}{os.pathsep}{env.get('LD_LIBRARY_PATH', '')}"
 
-    try:
-        result = subprocess.run(
-            [bin_path, "--version"],
-            capture_output=True, text=True, timeout=10, env=env
-        )
-        version_output = (result.stdout + result.stderr).strip()
-    except FileNotFoundError:
+    result = subprocess.run(
+        [LLAMA_CLI, "--version"],
+        capture_output=True, text=True, env=env
+    )
+    if "1191758c5" not in result.stdout + result.stderr:
         raise RuntimeError(
-            f"No se pudo ejecutar {filename}.\n"
-            "Asegúrate de que el binario exista y tenga permisos de ejecución."
-        )
-    except subprocess.TimeoutExpired:
-        raise RuntimeError(
-            f"{filename} --version no respondió en 10 segundos.\n"
-            "Posiblemente sea un binario corrupto o incompatible con este sistema."
-        )
-
-    if VERSION_REQUERIDA not in version_output:
-        raise RuntimeError(
-            f"Versión incorrecta de llama-cli.\n\n"
-            f"Se requiere: commit {VERSION_REQUERIDA} (b9780)\n"
-            f"Versión actual: {version_output.split(chr(10))[0] if version_output else 'desconocida'}\n\n"
-            "Descarga la versión correcta desde:\n"
-            "  https://github.com/ggml-org/llama.cpp/releases/tag/b9780\n\n"
-            "O compílalo desde el commit exacto:\n"
-            "  git checkout 1191758c5 && cmake -B build && cmake --build build"
+            f"Versión incorrecta de llama-cli.\n"
+            f"Necesitas: 9780 (1191758c5)\n"
+            f"Baja la correcta desde README.md"
         )
 
 

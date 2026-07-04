@@ -112,6 +112,16 @@ cp build/bin/llama-cli ../bin/
 También puedes descargar el `.gguf` desde la pestaña "Releases" de HuggingFace
 buscando `Qwen3-VL-2B-Instruct-GGUF`.
 
+⚠️ **IMPORTANTE: Modelo único soportado**
+
+Esta app SOLO funciona con:
+`Qwen3-VL-2B-Instruct-Q4_K_M.gguf`
+
+¿Por qué no puedo usar Phi-3, Llama-3, Mistral?
+Porque v1.0 está calibrada para Qwen3-VL. Otros modelos rompen la clasificación.
+
+Si pones otro modelo la app no arrancará y te avisará.
+
 # 5. Configuración
 cp config.ini.example config.ini   # editar con tus datos
 ```
