@@ -1245,6 +1245,24 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
+
+    try:
+        from daemon import verificar_entorno
+        verificar_entorno()
+    except ImportError as e:
+        QMessageBox.critical(
+            None, "Error de importación",
+            f"Falta una dependencia: {e}\n\n"
+            "Ejecuta: pip install -r requirements.txt"
+        )
+        sys.exit(1)
+    except RuntimeError as e:
+        QMessageBox.critical(
+            None, "Entorno incompleto",
+            str(e)
+        )
+        sys.exit(1)
+
     window = MainWindow()
     window.show()
     sys.exit(app.exec())

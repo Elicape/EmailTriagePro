@@ -1,0 +1,12 @@
+EmailTriagePro — Modelo Qwen3-VL 2B
+
+Archivo requerido:
+  Qwen3-VL-2B-Instruct-Q4_K_M.gguf  (1.3 GB)
+
+Descárgalo de HuggingFace:
+  https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct-GGUF/resolve/main/Qwen3-VL-2B-Instruct-Q4_K_M.gguf
+
+Coloca el archivo directamente en esta carpeta (models/).
+
+Si el enlace no funciona, busca "Qwen3-VL-2B-Instruct-GGUF" en HuggingFace
+y descarga el archivo Q4_K_M.gguf de la lista de archivos.

@@ -45,3 +45,32 @@ La aplicación sigue funcionando. Solo que no recibirás avisos en el móvil. En
 - En Mac/Linux: abre la terminal y escribe: `rm config.ini` en la carpeta del programa.
 
 Luego abre la aplicación otra vez y verás la pantalla de bienvenida.
+
+## 4. Verificar que el programa está bien instalado
+
+La aplicación necesita un archivo especial llamado `llama-cli` para funcionar. Si al abrir la aplicación ves un mensaje de "Entorno incompleto", significa que falta ese archivo o no es la versión correcta.
+
+### Cómo comprobar la versión
+
+Abre una terminal (símbolo del sistema en Windows) y escribe:
+
+```bash
+cd carpeta_del_programa
+./bin/llama-cli --version
+```
+
+Tiene que salir algo como:
+
+```
+version: 9780 (1191758c5)
+```
+
+Si no ves `1191758c5` en el resultado, la versión es incorrecta.
+
+### Qué hacer si falta
+
+1. Ve a https://github.com/ggml-org/llama.cpp/releases/tag/b9780
+2. Descarga el archivo `llama-cli` para tu sistema operativo
+3. Cópialo dentro de la carpeta `bin/` del programa
+
+**Si no encuentras la versión b9780, escríbeme y te paso el archivo directamente.**

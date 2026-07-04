@@ -90,9 +90,27 @@ source venv/bin/activate
 # 3. Dependencias
 pip install -r requirements.txt
 
-# 4. Peso del modelo
-# Descargar Qwen3-VL-2B-Instruct-Q4_K_M.gguf desde HuggingFace
-# y colocarlo en models/
+# 4. Archivos grandes
+
+**OBLIGATORIO: llama.cpp commit `1191758c5`, versión b9780. Otras versiones NO funcionan.**
+
+```bash
+# llama-cli (b9780 / commit 1191758c5)
+# Descargar desde: https://github.com/ggml-org/llama.cpp/releases/tag/b9780
+# O compilar desde el commit exacto:
+git clone https://github.com/ggml-org/llama.cpp
+cd llama.cpp
+git checkout 1191758c5
+cmake -B build
+cmake --build build --config Release
+cp build/bin/llama-cli ../bin/
+
+# Modelo Qwen (1.3GB). Colocar en models/
+# https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct-GGUF/resolve/main/Qwen3-VL-2B-Instruct-Q4_K_M.gguf
+```
+
+También puedes descargar el `.gguf` desde la pestaña "Releases" de HuggingFace
+buscando `Qwen3-VL-2B-Instruct-GGUF`.
 
 # 5. Configuración
 cp config.ini.example config.ini   # editar con tus datos

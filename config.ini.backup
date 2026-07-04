@@ -1,0 +1,17 @@
+[IMAP]
+host = imap.zoho.eu
+port = 993
+user = minuevavida@zohomail.eu
+pass = @m1_3mqrR3zA_N3w@
+use_ssl = true
+
+[TELEGRAM]
+token = 8921500519:AAEfoAoJT9uIGIbMVmxZ28knUcC4ryc7N_Y
+chat_id = 7237693699
+
+[HORARIOS]
+resumen = 09:00,14:00,19:00
+
+[LLAMA]
+llama_path = bin/llama-cli
+model_path = models/Qwen3-VL-2B-Instruct-Q4_K_M.gguf

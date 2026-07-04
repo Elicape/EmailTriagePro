@@ -117,6 +117,70 @@ def get_model_path(config_model_path=None):
     return "Qwen3-VL-2B-Instruct-Q4_K_M.gguf"
 
 
+VERSION_REQUERIDA = "1191758c5"
+
+def verificar_entorno():
+    workspace = os.path.dirname(os.path.abspath(__file__))
+    is_windows = platform.system() == "Windows"
+    filename = "llama-cli.exe" if is_windows else "llama-cli"
+    bin_path = os.path.join(workspace, "bin", filename)
+    model_path = os.path.join(workspace, "models", "Qwen3-VL-2B-Instruct-Q4_K_M.gguf")
+
+    if not os.path.exists(bin_path):
+        raise RuntimeError(
+            f"Falta el archivo: bin/{filename}\n\n"
+            "Descarga llama.cpp versión b9780 (commit 1191758c5) y copia "
+            "llama-cli en la carpeta bin/.\n"
+            "Enlace: https://github.com/ggml-org/llama.cpp/releases/tag/b9780\n\n"
+            "O compílalo tú mismo desde el commit:\n"
+            "  git clone https://github.com/ggml-org/llama.cpp\n"
+            "  cd llama.cpp && git checkout 1191758c5 && cmake -B build && cmake --build build --config Release\n"
+            "  cp build/bin/llama-cli <ruta>/bin/"
+        )
+
+    if not os.path.exists(model_path):
+        raise RuntimeError(
+            f"Falta el archivo: models/Qwen3-VL-2B-Instruct-Q4_K_M.gguf\n\n"
+            "Descárgalo de HuggingFace (pesa 1.3GB):\n"
+            "  https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct-GGUF/resolve/main/"
+            "Qwen3-VL-2B-Instruct-Q4_K_M.gguf\n\n"
+            "Coloca el archivo en la carpeta models/"
+        )
+
+    env = os.environ.copy()
+    bin_dir = os.path.join(workspace, "bin")
+    ld_key = "LD_LIBRARY_PATH" if not is_windows else "PATH"
+    env[ld_key] = f"{bin_dir}{os.pathsep}{env.get(ld_key, '')}"
+
+    try:
+        result = subprocess.run(
+            [bin_path, "--version"],
+            capture_output=True, text=True, timeout=10, env=env
+        )
+        version_output = (result.stdout + result.stderr).strip()
+    except FileNotFoundError:
+        raise RuntimeError(
+            f"No se pudo ejecutar {filename}.\n"
+            "Asegúrate de que el binario exista y tenga permisos de ejecución."
+        )
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(
+            f"{filename} --version no respondió en 10 segundos.\n"
+            "Posiblemente sea un binario corrupto o incompatible con este sistema."
+        )
+
+    if VERSION_REQUERIDA not in version_output:
+        raise RuntimeError(
+            f"Versión incorrecta de llama-cli.\n\n"
+            f"Se requiere: commit {VERSION_REQUERIDA} (b9780)\n"
+            f"Versión actual: {version_output.split(chr(10))[0] if version_output else 'desconocida'}\n\n"
+            "Descarga la versión correcta desde:\n"
+            "  https://github.com/ggml-org/llama.cpp/releases/tag/b9780\n\n"
+            "O compílalo desde el commit exacto:\n"
+            "  git checkout 1191758c5 && cmake -B build && cmake --build build"
+        )
+
+
 def send_desktop_notification(title, message):
     try:
         from plyer import notification

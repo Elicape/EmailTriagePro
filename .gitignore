@@ -16,3 +16,6 @@ venv/
 tree.txt
 llama-cli-flags.md
 Automatizar-emails-para-autónoma.txt
+bin/
+bin_win/
+models/*.gguf
